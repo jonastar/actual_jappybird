@@ -2,9 +2,11 @@
 
 mod actions;
 mod audio;
+mod gravity;
 mod loading;
 mod menu;
 mod player;
+mod velocity;
 
 use crate::actions::ActionsPlugin;
 use crate::audio::InternalAudioPlugin;
@@ -16,6 +18,8 @@ use bevy::app::App;
 #[cfg(debug_assertions)]
 use bevy::diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin};
 use bevy::prelude::*;
+use gravity::GravityPlugin;
+use velocity::VelocityPlugin;
 
 // This example game uses States to separate logic
 // See https://bevy-cheatbook.github.io/programming/states.html
@@ -41,6 +45,8 @@ impl Plugin for GamePlugin {
             ActionsPlugin,
             InternalAudioPlugin,
             PlayerPlugin,
+            VelocityPlugin,
+            GravityPlugin,
         ));
 
         #[cfg(debug_assertions)]
