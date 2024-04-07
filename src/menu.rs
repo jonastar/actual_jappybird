@@ -1,5 +1,5 @@
 use crate::loading::TextureAssets;
-use crate::GameState;
+use crate::{GameState, PROJECTION_SIZE};
 use bevy::prelude::*;
 
 pub struct MenuPlugin;
@@ -34,7 +34,18 @@ struct Menu;
 
 fn setup_menu(mut commands: Commands, textures: Res<TextureAssets>) {
     info!("menu");
-    commands.spawn(Camera2dBundle::default());
+    commands.spawn(Camera2dBundle {
+        projection: OrthographicProjection {
+            far: 1000.,
+            near: -1000.,
+            scaling_mode: bevy::render::camera::ScalingMode::Fixed {
+                width: PROJECTION_SIZE.x,
+                height: PROJECTION_SIZE.y,
+            },
+            ..Default::default()
+        },
+        ..Default::default()
+    });
     commands
         .spawn((
             NodeBundle {

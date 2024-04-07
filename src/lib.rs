@@ -2,9 +2,11 @@
 
 mod actions;
 mod audio;
+mod game_session;
 mod gravity;
 mod loading;
 mod menu;
+mod obstacle;
 mod player;
 mod velocity;
 
@@ -18,7 +20,9 @@ use bevy::app::App;
 #[cfg(debug_assertions)]
 use bevy::diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin};
 use bevy::prelude::*;
+use game_session::GameSessionPlugin;
 use gravity::GravityPlugin;
+use obstacle::ObstaclePlugin;
 use velocity::VelocityPlugin;
 
 // This example game uses States to separate logic
@@ -35,6 +39,8 @@ enum GameState {
     Menu,
 }
 
+pub const PROJECTION_SIZE: Vec2 = Vec2::new(500.0, 500.0);
+
 pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
@@ -47,6 +53,8 @@ impl Plugin for GamePlugin {
             PlayerPlugin,
             VelocityPlugin,
             GravityPlugin,
+            ObstaclePlugin,
+            GameSessionPlugin,
         ));
 
         #[cfg(debug_assertions)]
