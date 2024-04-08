@@ -41,12 +41,22 @@ fn obstacle_spawner(
         return;
     }
 
-    if timer.0 - *last_spawned_obstacle < 1.0 {
+    if timer.0 - *last_spawned_obstacle < 2.5 {
         return;
     }
 
+    let space = 200.0;
+    let first_length = fastrand::f32() * (PROJECTION_SIZE.y - (space + 10.0));
+
     send_events.send(SpawnObstacleEvent {
-        free_space: 200.0,
+        length: first_length,
+        origin: crate::obstacle::ObstacleOrigin::Top,
+        x_position: player_transform.translation.x + PROJECTION_SIZE.x + 20.0,
+    });
+
+    send_events.send(SpawnObstacleEvent {
+        length: (PROJECTION_SIZE.y - first_length) - space,
+        origin: crate::obstacle::ObstacleOrigin::Bottom,
         x_position: player_transform.translation.x + PROJECTION_SIZE.x + 20.0,
     });
 

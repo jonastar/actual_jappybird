@@ -11,11 +11,11 @@ impl Plugin for ObstaclePlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<ObstacleMaterial>()
             .add_event::<SpawnObstacleEvent>()
-            .add_systems(Update, spawn_obstacle_sprite)
-            .add_systems(Update, obstacle_spawner);
+            .add_systems(Update, (obstacle_spawner, spawn_obstacle_sprite).chain());
     }
 }
 
+#[derive(Debug, Clone, Copy)]
 pub enum ObstacleOrigin {
     Top,
     Bottom,
@@ -70,27 +70,17 @@ pub fn spawn_obstacle_sprite(
 
 #[derive(Event)]
 pub struct SpawnObstacleEvent {
-    pub free_space: f32,
     pub x_position: f32,
+    pub origin: ObstacleOrigin,
+    pub length: f32,
 }
 
 pub fn obstacle_spawner(mut commands: Commands, mut events: EventReader<SpawnObstacleEvent>) {
     for event in events.read() {
-        let space_to_block = PROJECTION_SIZE.y - event.free_space;
-        let lengths = space_to_block / 2.0;
-
         commands.spawn(SpawnObstacleBundle {
             obstacle: Obstacle {
-                origin: ObstacleOrigin::Top,
-                length: lengths,
-            },
-            transform: Transform::from_translation(Vec3::new(event.x_position, 0.0, 0.0)),
-        });
-
-        commands.spawn(SpawnObstacleBundle {
-            obstacle: Obstacle {
-                origin: ObstacleOrigin::Bottom,
-                length: lengths,
+                origin: event.origin,
+                length: event.length,
             },
             transform: Transform::from_translation(Vec3::new(event.x_position, 0.0, 0.0)),
         });
