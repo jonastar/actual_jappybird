@@ -17,12 +17,13 @@ pub struct Player;
 /// Player logic is only active during the State `GameState::Playing`
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(GameState::Playing), spawn_player)
+        app.add_event::<FlapEvent>()
+            .add_systems(OnEnter(GameState::Playing), spawn_player)
             .add_systems(OnExit(GameState::GameOver), cleanup_entities_with::<Player>)
             .add_systems(
                 Update,
                 (
-                    player_up,
+                    player_flap,
                     player_follow_camera,
                     handle_player_collision,
                     player_out_of_bounds_check,
@@ -65,10 +66,18 @@ fn spawn_player(mut commands: Commands, textures: Res<TextureAssets>) {
 
 const UP_VELOCITY: Vec3 = Vec3::new(0.0, 300.0, 0.0);
 
-fn player_up(actions: Res<Actions>, mut player_query: Query<&mut Velocity, With<Player>>) {
+#[derive(Event)]
+pub struct FlapEvent;
+
+fn player_flap(
+    actions: Res<Actions>,
+    mut player_query: Query<&mut Velocity, With<Player>>,
+    mut events: EventWriter<FlapEvent>,
+) {
     if actions.player_up {
         for mut vel in &mut player_query {
-            vel.0.y = UP_VELOCITY.y
+            vel.0.y = UP_VELOCITY.y;
+            events.send(FlapEvent);
         }
     }
 }
