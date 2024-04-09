@@ -1,0 +1,18 @@
+[package]
+name = "game"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+bevy = { workspace = true }
+bevy_kira_audio = { workspace = true }
+bevy_asset_loader = { workspace = true }
+rand = { workspace = true }
+webbrowser = { workspace = true }
+
+# keep the following in sync with Bevy's dependencies
+winit = { workspace = true }
+image = { workspace = true }
+fastrand = { workspace = true }

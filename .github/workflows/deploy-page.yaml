@@ -22,19 +22,20 @@ jobs:
       - name: Install trunk
         uses: jetli/trunk-action@v0.4.0
         with:
-          version: 'latest'
+          version: "latest"
       - name: Add wasm target
         run: |
           rustup target add wasm32-unknown-unknown
       - name: Build Release
+        working-directory: cmd
         run: |
           trunk build --release
       - name: optimize Wasm
         uses: NiklasEi/wasm-opt-action@v2
         with:
-          file: dist/*.wasm
+          file: cmd/dist/*.wasm
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.2.5
         with:
           branch: gh-pages
-          folder: dist
+          folder: cmd/dist

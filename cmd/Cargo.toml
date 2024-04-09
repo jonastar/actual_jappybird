@@ -1,0 +1,27 @@
+[package]
+name = "cmd"                                     # ToDo
+version = "0.1.0"
+publish = false
+edition = "2021"
+exclude = ["dist", "build", "assets", "credits"]
+
+[features]
+dev = ["bevy/dynamic_linking"]
+
+# All of Bevy's default features exept for the audio related ones (bevy_audio, vorbis), since they clash with bevy_kira_audio
+#   and android_shared_stdcxx, since that is covered in `mobile`
+[dependencies]
+bevy = { workspace = true }
+bevy_kira_audio = { workspace = true }
+bevy_asset_loader = { workspace = true }
+rand = { workspace = true }
+webbrowser = { workspace = true }
+
+# keep the following in sync with Bevy's dependencies
+winit = { workspace = true }
+image = { workspace = true }
+fastrand = { workspace = true }
+game = { path = "../game" }
+
+[build-dependencies]
+embed-resource = "1"
