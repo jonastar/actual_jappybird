@@ -18,6 +18,12 @@ impl Plugin for GameSessionPlugin {
 #[derive(Resource)]
 pub struct GameTimer(pub f32);
 
+impl GameTimer {
+    pub fn get_score(&self) -> i32 {
+        (self.0 * 10.0).floor() as i32
+    }
+}
+
 fn reset_timer(mut timer: ResMut<GameTimer>) {
     timer.0 = 0.0;
 }

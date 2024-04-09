@@ -1,9 +1,10 @@
 use bevy::{
+    math::bounding::Aabb2d,
     prelude::*,
     sprite::{MaterialMesh2dBundle, Mesh2dHandle},
 };
 
-use crate::PROJECTION_SIZE;
+use crate::{cleanup_entities_with, collision::Collider, GameState, PROJECTION_SIZE};
 
 pub struct ObstaclePlugin;
 
@@ -11,6 +12,10 @@ impl Plugin for ObstaclePlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<ObstacleMaterial>()
             .add_event::<SpawnObstacleEvent>()
+            .add_systems(
+                OnExit(GameState::GameOver),
+                cleanup_entities_with::<Obstacle>,
+            )
             .add_systems(Update, (obstacle_spawner, spawn_obstacle_sprite).chain());
     }
 }
@@ -58,13 +63,19 @@ pub fn spawn_obstacle_sprite(
             ObstacleOrigin::Bottom => (-PROJECTION_SIZE.y / 2.0) + (obstacle.length / 2.0),
         };
 
-        commands.entity(entity).insert(MaterialMesh2dBundle {
-            material: material.0.clone(),
-            mesh: shape,
-            transform: transform
-                .with_translation(transform.translation + Vec3::new(0.0, y_pos, 0.0)),
-            ..default()
-        });
+        commands
+            .entity(entity)
+            .insert(MaterialMesh2dBundle {
+                material: material.0.clone(),
+                mesh: shape,
+                transform: transform
+                    .with_translation(transform.translation + Vec3::new(0.0, y_pos, 0.0)),
+                ..default()
+            })
+            .insert(Collider::Aabb(Aabb2d::new(
+                Vec2::ZERO,
+                Vec2::new(25.0, obstacle.length / 2.0),
+            )));
     }
 }
 

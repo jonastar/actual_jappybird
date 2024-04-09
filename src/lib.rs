@@ -2,12 +2,16 @@
 
 mod actions;
 mod audio;
+mod collision;
+mod game_over;
 mod game_session;
 mod gravity;
+mod hud;
 mod loading;
 mod menu;
 mod obstacle;
 mod player;
+mod ui;
 mod velocity;
 
 use crate::actions::ActionsPlugin;
@@ -20,9 +24,13 @@ use bevy::app::App;
 #[cfg(debug_assertions)]
 use bevy::diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin};
 use bevy::prelude::*;
+use collision::CollisionPlugin;
+use game_over::GameOverPlugin;
 use game_session::GameSessionPlugin;
 use gravity::GravityPlugin;
+use hud::HudPlugin;
 use obstacle::ObstaclePlugin;
+use ui::UiPlugin;
 use velocity::VelocityPlugin;
 
 // This example game uses States to separate logic
@@ -35,6 +43,7 @@ enum GameState {
     Loading,
     // During this State the actual game logic is executed
     Playing,
+    GameOver,
     // Here the menu is drawn and waiting for player interaction
     Menu,
 }
@@ -55,11 +64,21 @@ impl Plugin for GamePlugin {
             GravityPlugin,
             ObstaclePlugin,
             GameSessionPlugin,
+            CollisionPlugin,
+            UiPlugin,
+            GameOverPlugin,
+            HudPlugin,
         ));
 
         #[cfg(debug_assertions)]
         {
             app.add_plugins((FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin::default()));
         }
+    }
+}
+
+pub fn cleanup_entities_with<T: Component>(mut commands: Commands, menu: Query<Entity, With<T>>) {
+    for entity in menu.iter() {
+        commands.entity(entity).despawn_recursive();
     }
 }
