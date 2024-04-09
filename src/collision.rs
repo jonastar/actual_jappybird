@@ -56,9 +56,9 @@ pub struct CollisionEvent {
 }
 
 impl CollisionEvent {
-    pub fn get_query_entity<'a, 'w, 's, D: QueryData, F: QueryFilter>(
+    pub fn get_query_entity<'a, D: QueryData, F: QueryFilter>(
         &self,
-        query: &'a Query<'w, 's, D, F>,
+        query: &'a Query<'_, '_, D, F>,
     ) -> Result<(ROQueryItem<'a, D>, Entity), ()> {
         if let Ok(data) = query.get(self.entity_a) {
             Ok((data, self.entity_b))

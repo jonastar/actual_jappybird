@@ -56,7 +56,7 @@ fn spawn_hud(mut commands: Commands) {
 
 fn update_score_text(mut score_text: Query<&mut Text, With<ScoreText>>, timer: Res<GameTimer>) {
     for mut text in &mut score_text {
-        if text.sections.len() > 0 {
+        if !text.sections.is_empty() {
             text.sections[0].value = format!("{}", timer.get_score());
         }
     }
